@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { withAuth0 } from '@auth0/auth0-react';
-
+import './profile.css';
 class Profile extends Component {
   render() {
     const { user,isAuthenticated } = this.props.auth0;
     return (
         <>
-        {isAuthenticated && <div>Hello {user.name}</div>}
-        {isAuthenticated && <div>Email: {user.email}</div>}
+       <div className='container profile'>
+       {isAuthenticated && <img src={user.picture} />}
+        {isAuthenticated && <h1 className='text-warning'>Hello {user.name}</h1>}
+        {isAuthenticated && <h4>Email: {user.email}</h4>}
+        {console.log(user)}
+       </div>
         </>
     )
     ;

@@ -7,7 +7,8 @@ import LoginButton from './loginButton';
 class Login extends React.Component {
   render() {
     return(
-      <Card style={{ width: '18rem' }}>
+      <div className='all'>
+        <Card style={{ width: '18rem' }}>
         <Card.Body>
           <Card.Title>Log In</Card.Title>
           <Card.Text>
@@ -18,6 +19,7 @@ class Login extends React.Component {
           
         </Card.Body>
       </Card>
+      </div>
     )
   }
 }
