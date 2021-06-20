@@ -1,0 +1,17 @@
+.profile{
+    padding:100px 0;
+    height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+img{
+    border-radius: 50%;
+
+
+}
+h1{
+    font-weight: 900;
+    
+}
