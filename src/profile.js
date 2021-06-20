@@ -7,7 +7,7 @@ class Profile extends Component {
     return (
         <>
        <div className='container profile'>
-       {isAuthenticated && <img src={user.picture} />}
+       {isAuthenticated && <img src={user.picture} alt='profile'/>}
         {isAuthenticated && <h1 className='text-warning'>Hello {user.name}</h1>}
         {isAuthenticated && <h4>Email: {user.email}</h4>}
         {console.log(user)}
