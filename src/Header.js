@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from "react-router-dom";
 import './Header.css';
-
+import Login from './Login';
+import LogoutButton from './LogoutButton'
 class Header extends React.Component {
   render() {
     return(
@@ -12,6 +13,8 @@ class Header extends React.Component {
         <Link to="/">Home</Link>
         <Link to="/profile">Profile</Link>
         {/* TODO: if the user is logged in, render the `LogoutButton` - if the user is logged out, render the `LoginButton` */}
+        <Login />
+        <LogoutButton />
       </Navbar>
     );
   }
