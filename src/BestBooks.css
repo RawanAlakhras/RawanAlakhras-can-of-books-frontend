@@ -8,8 +8,11 @@
   justify-content: center;
   align-items: center;
 }
-.carousel-caption h3,.carousel-caption p{
+.carousel-caption p{
   color:#000 !important;
+}
+.carousel-caption h3{
+  color: #E0A800;
 }
 .carousel-inner{
   height: 100% !important;
