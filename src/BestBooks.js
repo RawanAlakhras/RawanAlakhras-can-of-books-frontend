@@ -33,7 +33,7 @@ class MyFavoriteBooks extends React.Component {
         {
 
           this.state.bookData.length > 0 &&
-          <Carousel>
+          <Carousel className="w-100 h-100">
             {this.state.bookData.map((ele, inx) => {
               return (
                 <Carousel.Item key={inx.toString()}>
