@@ -39,7 +39,7 @@ class MyFavoriteBooks extends React.Component {
                 <Carousel.Item key={inx.toString()}>
                   <img
                     className="w-100"
-                    src="holder.js/300x200?bg=2a2025"
+                    src="https://via.placeholder.com/190"
                     alt="First slide"
                   />
                   {console.log(ele.name)}
