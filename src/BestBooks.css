@@ -3,22 +3,19 @@
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 .h-85{
-  height: 85vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  min-height: 85vh;
+  padding: 40px 0;
+  
 }
-.carousel-caption p{
-  color:#000 !important;
+
+
+.card{
+  min-height:400px;
+  margin: 5px 0!important;
+  
+
 }
-.carousel-caption h3{
-  color: #E0A800;
-}
-.carousel-inner{
-  height: 100% !important;
-  width: 100% !important;
-}
-.carousel-item{
-  width: 100% !important;
-  height: 100% !important;
+
+.card-title{
+  color: #E0A800 !important;
 }

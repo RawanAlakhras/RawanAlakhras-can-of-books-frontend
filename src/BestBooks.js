@@ -1,27 +1,73 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Carousel from 'react-bootstrap/Carousel'
+import { Button, Card, Modal, Form } from 'react-bootstrap/';
 import './BestBooks.css';
 import axios from 'axios';
+import { withAuth0 } from '@auth0/auth0-react';
 class MyFavoriteBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       bookData: [],
       userData: [],
+      show: false,
+      email: '',
     }
   }
   componentDidMount = async () => {
     const heroku = process.env.REACT_APP_SERVER;
-    const bookURL = `${heroku}/Book`;
+    const { user } = this.props.auth0;
+    const bookURL = `${heroku}/Book?email=${user.email}`;
     const userURL = `${heroku}/User`;
-
     let bookRes = await axios.get(bookURL);
     let userRes = await axios.get(userURL);
 
     this.setState({
       bookData: bookRes.data,
       userData: userRes.data,
+      email: user.email,
+    });
+    //console.log(this.state.email);
+
+  }
+  handelClick = () => {
+    this.setState({
+      show: true,
+    });
+  }
+
+  handleClose = () => {
+    this.setState({
+      show: false,
+    })
+  }
+
+  addBook = async (event) => {
+    event.preventDefault();
+    //console.log(event.target.bookName.value);
+    const server = process.env.REACT_APP_SERVER;
+    const newBook = {
+      name: event.target.bookName.value,
+      description: event.target.description.value,
+      status: event.target.status.value,
+      userEmail: this.state.email,
+
+    }
+    const addBookUrl = await axios.post(`${server}/addBook`, newBook);
+    this.setState({
+      bookData: addBookUrl.data,
+    })
+  }
+
+  deleteBook = async(idx) => {
+    const server = process.env.REACT_APP_SERVER;
+    const deletPara={
+      email:this.state.email,
+      index:idx,
+    }
+    const deletURL=await axios.delete(`${server}/deleteBook`,{params:deletPara});
+    this.setState({
+      bookData: deletURL.data,
     });
   }
   render() {
@@ -29,36 +75,81 @@ class MyFavoriteBooks extends React.Component {
     return (
 
       <div className='container h-85'>
+        <div className='row w-100'>
+          <div className='col m-auto d-flex justify-content-center'>
+            <Button variant="warning" onClick={this.handelClick} >Add Book</Button>
+          </div>
+
+        </div>
         {console.log(this.state.bookData.length)}
         {
 
           this.state.bookData.length > 0 &&
-          <Carousel className="w-100 h-100">
+          <div className="row row-cols-3">
             {this.state.bookData.map((ele, inx) => {
               return (
-                <Carousel.Item key={inx.toString()}>
-                  <img
-                    className="w-100"
-                    src="https://via.placeholder.com/190"
-                    alt="First slide"
-                  />
-                  {console.log(ele.name)}
-                  <Carousel.Caption>
-                    <h3>name of the book : {ele.name}</h3>
-                    <p>description : {ele.description}</p>
-                    <p>status: {ele.status}</p>
-                  </Carousel.Caption>
-                </Carousel.Item>
+
+                <Card key={inx.toString()} className='rawan'>
+
+
+                  <Card.Body>
+                    <Card.Title>name of the book : {ele.name}</Card.Title>
+                    <Card.Text>
+                      description : {ele.description}
+                    </Card.Text>
+                    <Button variant="warning" onClick={()=>this.deleteBook(inx)}>Delete</Button>
+                  </Card.Body>
+                  <Card.Footer>
+                    <small className="text-muted">status: {ele.status}</small>
+                  </Card.Footer>
+
+
+                </Card>
               )
             })
             }
-          </Carousel>
+          </div>
 
         }
+
+
+        <Modal show={this.state.show} onHide={this.handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Book</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form onSubmit={this.addBook}>
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>Book name</Form.Label>
+                <Form.Control type="text" placeholder="book name" name='bookName' />
+
+              </Form.Group>
+
+              <Form.Group controlId="formBasicPassword">
+                <Form.Label>Book description</Form.Label>
+                <Form.Control type="text" placeholder="description" name='description' />
+              </Form.Group>
+              <Form.Group controlId="status">
+                <Form.Label>Book status</Form.Label>
+                <Form.Control type="text" placeholder="status" name='status' />
+              </Form.Group>
+              <Button variant="warning" type="submit">
+                Submit
+              </Button>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleClose}>
+              Close
+            </Button>
+
+          </Modal.Footer>
+        </Modal>
+
 
       </div>
     )
   }
 }
 
-export default MyFavoriteBooks;
+export default withAuth0(MyFavoriteBooks);
