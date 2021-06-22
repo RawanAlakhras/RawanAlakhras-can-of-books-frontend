@@ -53,6 +53,14 @@ Start time:2:00pm<br>
 Finish time:11:00pm<br>
 Actual time needed to complete: 8 hours.<br>
 
+# Time Estimate:
+
+Number and name of feature :# 3<br>
+Estimate of time needed to complete: 3 hours.<br>
+Start time:2:30pm<br>
+Finish time:9:00pm<br>
+Actual time needed to complete: 6 hours.<br>
+
 
 
 
