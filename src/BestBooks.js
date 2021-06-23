@@ -23,9 +23,9 @@ class MyFavoriteBooks extends React.Component {
     const heroku = process.env.REACT_APP_SERVER;
     const { user } = this.props.auth0;
     const bookURL = `${heroku}/Book?email=${user.email}`;
-    const userURL = `${heroku}/User`;
+    //const userURL = `${heroku}/User`;
     let bookRes = await axios.get(bookURL);
-    let userRes = await axios.get(userURL);
+    //let userRes = await axios.get(userURL);
 
     this.setState({
       bookData: bookRes.data,
@@ -206,11 +206,11 @@ render() {
 
             <Form.Group controlId="formBasicPassword">
               <Form.Label>Book description</Form.Label>
-              <Form.Control type="text" placeholder="description" name='bookDis'value={this.state.bookDis} />
+              <Form.Control type="text" placeholder="description" name='bookDis'defaultValue={this.state.bookDis} />
             </Form.Group>
             <Form.Group controlId="status">
               <Form.Label>Book status</Form.Label>
-              <Form.Control type="text" placeholder="status" name='bookSta' value={this.state.bookSta}/>
+              <Form.Control type="text" placeholder="status" name='bookSta' defaultValue={this.state.bookSta}/>
             </Form.Group>
             <Button variant="warning" type="submit">
               Submit
