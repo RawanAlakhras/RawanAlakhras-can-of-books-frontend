@@ -12,6 +12,11 @@ class MyFavoriteBooks extends React.Component {
       userData: [],
       show: false,
       email: '',
+      showUpdate: false,
+      index: 0,
+      NameBook:'',
+      bookDis:'',
+      bookSta:'',
     }
   }
   componentDidMount = async () => {
@@ -24,7 +29,7 @@ class MyFavoriteBooks extends React.Component {
 
     this.setState({
       bookData: bookRes.data,
-      userData: userRes.data,
+      userData: bookRes.data,
       email: user.email,
     });
     //console.log(this.state.email);
@@ -34,122 +39,194 @@ class MyFavoriteBooks extends React.Component {
     this.setState({
       show: true,
     });
+  };
+   handelUpdateClick = (inx)=> {
+  this.setState({
+    showUpdate: true,
+    index: inx,
+    NameBook: this.state.userData[inx].name,
+    bookDis: this.state.userData[inx].description,
+    bookSta: this.state.userData[inx].status,
+
+  });
+  console.log(this.state.NameBook);
+  console.log(this.state.bookDis);
+  console.log(this.state.index);
+}
+
+handleClose = () => {
+  this.setState({
+    show: false,
+  })
+}
+handleUpdateClose = () => {
+  this.setState({
+    showUpdate: false,
+
+  })
+}
+
+addBook = async (event) => {
+  event.preventDefault();
+  //console.log(event.target.bookName.value);
+  const server = process.env.REACT_APP_SERVER;
+  const newBook = {
+    name: event.target.bookName.value,
+    description: event.target.description.value,
+    status: event.target.status.value,
+    userEmail: this.state.email,
+
   }
+  const addBookUrl = await axios.post(`${server}/addBook`, newBook);
+  this.setState({
+    userData: addBookUrl.data,
+  })
+}
 
-  handleClose = () => {
-    this.setState({
-      show: false,
-    })
+deleteBook = async (idx) => {
+  const server = process.env.REACT_APP_SERVER;
+  const deletPara = {
+    email: this.state.email,
+    index: idx,
   }
+  const deletURL = await axios.delete(`${server}/deleteBook`, { params: deletPara });
+  this.setState({
+    userData: deletURL.data,
+  });
+}
 
-  addBook = async (event) => {
-    event.preventDefault();
-    //console.log(event.target.bookName.value);
-    const server = process.env.REACT_APP_SERVER;
-    const newBook = {
-      name: event.target.bookName.value,
-      description: event.target.description.value,
-      status: event.target.status.value,
-      userEmail: this.state.email,
-
-    }
-    const addBookUrl = await axios.post(`${server}/addBook`, newBook);
-    this.setState({
-      bookData: addBookUrl.data,
-    })
+UpdateBook = async (event) => {
+  event.preventDefault();
+  const server = process.env.REACT_APP_SERVER;
+  const updatePara = {
+    email: this.state.email,
+    index: this.state.index,
+    name: event.target.NameBook.value,
+    description: event.target.bookDis.value,
+    status: event.target.bookSta.value,
   }
+  let updateURL = await axios.put(`${server}/updateBook/${this.state.index}`, updatePara);
+  this.setState({
+    userData: updateURL.data,
+  });
 
-  deleteBook = async(idx) => {
-    const server = process.env.REACT_APP_SERVER;
-    const deletPara={
-      email:this.state.email,
-      index:idx,
-    }
-    const deletURL=await axios.delete(`${server}/deleteBook`,{params:deletPara});
-    this.setState({
-      bookData: deletURL.data,
-    });
-  }
-  render() {
+}
+render() {
 
-    return (
+  return (
 
-      <div className='container h-85'>
-        <div className='row w-100'>
-          <div className='col m-auto d-flex justify-content-center'>
-            <Button variant="warning" onClick={this.handelClick} >Add Book</Button>
-          </div>
-
+    <div className='container h-85'>
+      <div className='row w-100'>
+        <div className='col m-auto d-flex justify-content-center'>
+          <Button variant="warning" onClick={this.handelClick} >Add Book</Button>
         </div>
-        {console.log(this.state.bookData.length)}
-        {
-
-          this.state.bookData.length > 0 &&
-          <div className="row row-cols-3">
-            {this.state.bookData.map((ele, inx) => {
-              return (
-
-                <Card key={inx.toString()} className='rawan'>
-
-
-                  <Card.Body>
-                    <Card.Title>name of the book : {ele.name}</Card.Title>
-                    <Card.Text>
-                      description : {ele.description}
-                    </Card.Text>
-                    <Button variant="warning" onClick={()=>this.deleteBook(inx)}>Delete</Button>
-                  </Card.Body>
-                  <Card.Footer>
-                    <small className="text-muted">status: {ele.status}</small>
-                  </Card.Footer>
-
-
-                </Card>
-              )
-            })
-            }
-          </div>
-
-        }
-
-
-        <Modal show={this.state.show} onHide={this.handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add Book</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form onSubmit={this.addBook}>
-              <Form.Group controlId="formBasicEmail">
-                <Form.Label>Book name</Form.Label>
-                <Form.Control type="text" placeholder="book name" name='bookName' />
-
-              </Form.Group>
-
-              <Form.Group controlId="formBasicPassword">
-                <Form.Label>Book description</Form.Label>
-                <Form.Control type="text" placeholder="description" name='description' />
-              </Form.Group>
-              <Form.Group controlId="status">
-                <Form.Label>Book status</Form.Label>
-                <Form.Control type="text" placeholder="status" name='status' />
-              </Form.Group>
-              <Button variant="warning" type="submit">
-                Submit
-              </Button>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleClose}>
-              Close
-            </Button>
-
-          </Modal.Footer>
-        </Modal>
-
 
       </div>
-    )
-  }
+      {console.log(this.state.bookData.length)}
+      {
+
+        this.state.bookData.length > 0 &&
+        <div className="row row-cols-3">
+          {this.state.userData.map((ele, inx) => {
+            return (
+
+              <Card key={inx.toString()} className='rawan'>
+
+
+                <Card.Body>
+                  <Card.Title>Book Name: {ele.name}</Card.Title>
+                  <Card.Text>
+                    description : {ele.description}
+                  </Card.Text>
+                  <div className='btn-rawan'>
+                    <Button variant="warning" onClick={() => this.deleteBook(inx)}>Delete</Button>
+                    <Button variant="warning" onClick={() => this.handelUpdateClick(inx)}>Update</Button>
+                  </div>
+                </Card.Body>
+                <Card.Footer>
+                  <small className="text-muted">status: {ele.status}</small>
+                </Card.Footer>
+               
+  
+
+
+              </Card>
+            )
+          })
+          }
+        </div>
+
+      }
+
+      {/*================== add book form modal ====================== */}
+      <Modal show={this.state.show} onHide={this.handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Book</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={this.addBook}>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Book name</Form.Label>
+              <Form.Control type="text" placeholder="book name" name='bookName'  />
+
+            </Form.Group>
+
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Book description</Form.Label>
+              <Form.Control type="text" placeholder="description" name='description' />
+            </Form.Group>
+            <Form.Group controlId="status">
+              <Form.Label>Book status</Form.Label>
+              <Form.Control type="text" placeholder="status" name='status' />
+            </Form.Group>
+            <Button variant="warning" type="submit">
+              Submit
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.handleClose}>
+            Close
+          </Button>
+
+        </Modal.Footer>
+      </Modal>
+      {/*================== update book form modal ====================== */}
+      <Modal show={this.state.showUpdate} onHide={this.handleUpdateClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Update Book</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={this.UpdateBook}>
+            <Form.Group controlId="formBasicEmail2">
+              <Form.Label>Book name</Form.Label>
+              <Form.Control type="text" placeholder="book name" name='NameBook'defaultValue={this.state.NameBook}/>
+
+            </Form.Group>
+
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Book description</Form.Label>
+              <Form.Control type="text" placeholder="description" name='bookDis'value={this.state.bookDis} />
+            </Form.Group>
+            <Form.Group controlId="status">
+              <Form.Label>Book status</Form.Label>
+              <Form.Control type="text" placeholder="status" name='bookSta' value={this.state.bookSta}/>
+            </Form.Group>
+            <Button variant="warning" type="submit">
+              Submit
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.handleUpdateClose}>
+            Close
+          </Button>
+
+        </Modal.Footer>
+      </Modal>
+    </div>
+  )
+}
 }
 
 export default withAuth0(MyFavoriteBooks);
